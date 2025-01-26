@@ -10,9 +10,10 @@ import tensorflow as tf
 
 app = FastAPI()
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT is not set
-    uvicorn.run(app, host="0.0.0.0", port=port)
+# Homepage route for testing
+@app.get("/")
+async def read_root():
+    return {"message": "FastAPI app is running!"}
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +22,7 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allows all headers
 )
+
 # Path to the trained model
 model_path = './models/gesture_recognition_model.h5'
 
@@ -58,3 +60,7 @@ async def predict(file: UploadFile = File(...)):
     predicted_alphabet = class_mapping.get(predicted_class, "Unknown")
 
     return JSONResponse(content={"prediction": predicted_alphabet})
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT is not set
+    uvicorn.run(app, host="0.0.0.0", port=port)
