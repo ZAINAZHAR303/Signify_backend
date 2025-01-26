@@ -8,6 +8,8 @@ import uvicorn
 import numpy as np
 import tensorflow as tf
 
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 app = FastAPI()
 
 # Homepage route for testing
@@ -31,8 +33,11 @@ if not os.path.exists(model_path):
     raise FileNotFoundError(f"Model file not found at {model_path}")
 
 # Load the trained model
-model = tf.keras.models.load_model(model_path)
-print("Model loaded successfully!")
+try:
+    model = tf.keras.models.load_model(model_path)
+    print("Model loaded successfully!")
+except Exception as e:
+    print(f"Error loading model: {e}")
 
 # Preprocess image
 def preprocess_image(image):
